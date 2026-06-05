@@ -18,7 +18,6 @@ zig version
 Build the test binary without stripping debug info:
 
 ```sh
-cd ~/dwarf-bug
 zig test repro.zig -fllvm -fno-strip --test-no-exec -femit-bin=/tmp/dwarf-bug-repro
 ```
 
@@ -51,7 +50,6 @@ Line `43` is invalid: `repro.zig` only has 22 lines.
 Emit LLVM IR:
 
 ```sh
-cd ~/dwarf-bug
 zig test repro.zig -fllvm -fno-strip --test-no-exec \
   -femit-llvm-ir=/tmp/dwarf-bug-repro.ll \
   -femit-bin=/tmp/dwarf-bug-repro-ir-bin
@@ -103,7 +101,6 @@ That incorrect metadata flows into the DWARF line table. Coverage tools that tru
 The issue is not limited to `-fllvm`. This also reproduces with the default backend:
 
 ```sh
-cd ~/dwarf-bug
 zig test repro.zig -fno-strip --test-no-exec -femit-bin=/tmp/dwarf-bug-repro-stage2
 readelf --debug-dump=decodedline /tmp/dwarf-bug-repro-stage2 2>/tmp/dwarf-bug-readelf.err | grep -A8 -B4 'repro.zig'
 ```
