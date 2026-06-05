@@ -58,26 +58,27 @@ zig test repro.zig -fllvm -fno-strip --test-no-exec \
 Inspect the generated function and debug metadata:
 
 ```sh
-ruby -ne '
-  if $_ =~ /^(!\d+) = distinct !DISubprogram\(name: "makeBox__anon/
-    $scope = $1
-    print
-  elsif defined?($scope) && $_.include?("scope: #{$scope}") && $_.match?(/line: (10|43)/)
-    print
-  end
-' /tmp/dwarf-bug-repro.ll
+awk '/makeBox__anon/{found=1} found{print; if(/^$/) found=0}' /tmp/dwarf-bug-repro.ll
 ```
 
-Expected suspicious output:
+Yields something like:
 
 ```text
-define internal fastcc void @repro.makeBox__anon_...
-!N = distinct !DISubprogram(... line: 9, scopeLine: 43, ...)
-!N = !DILocation(line: 43, column: 37, ...)
-!N = !DILocalVariable(name: "value", arg: 1, ... line: 43, ...)
+...
+!104934 = distinct !DISubprogram(name: "makeBox__anon_43217", linkageName: "repro.makeBox__anon_43217", scope: !104913, file: !104913, line: 9, type: !104935, scopeLine: 43, flags: DIFlagStaticMember, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !32)
+!104935 = !DISubroutineType(types: !104936)
+!104936 = !{!59, !104937, !875, !104925}
+!104937 = !DIDerivedType(tag: DW_TAG_pointer_type, name: "*repro.Boxed(repro.Plain)", scope: !32, baseType: !104922, size: 64, align: 64)
+!104938 = !DILocation(line: 43, column: 37, scope: !104934)
+!104939 = !DILocalVariable(name: "value", arg: 1, scope: !104934, file: !104913, line: 43, type: !104925)
+!104940 = !DILocation(line: 10, column: 5, scope: !104934)
 ```
 
-This shows the bad source line is emitted by Zig into LLVM debug metadata before DWARF consumers, coverage tools, or Codecov process the binary.
+ Notice:
+
+  * `!104938 = !DILocation(line: 43, column: 37, scope: !104934)`
+
+There is no line#43.
 
 ## Expected Behavior
 
