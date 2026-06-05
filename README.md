@@ -106,3 +106,22 @@ readelf --debug-dump=decodedline /tmp/dwarf-bug-repro-stage2 2>/tmp/dwarf-bug-re
 ```
 
 The default backend may emit noisier DWARF, but the same kind of bad `repro.zig:43` line entry appears.
+
+## Objdump
+
+The issue also appears in objdump:
+
+```sh
+objdump -d --line-numbers --demangle /tmp/dwarf-bug-repro | grep -A20 -B5 'makeBox__anon'                               
+```
+
+```text
+~/dwarf-bug/repro.zig:43
+ 11924c0:       55                      push   %rbp
+ 11924c1:       48 89 e5                mov    %rsp,%rbp
+ 11924c4:       50                      push   %rax
+ 11924c5:       48 89 f8                mov    %rdi,%rax
+ 11924c8:       48 89 55 f8             mov    %rdx,-0x8(%rbp)
+```
+
+There is no line #43 `repro.zig:43`.
