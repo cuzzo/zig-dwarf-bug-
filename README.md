@@ -77,11 +77,12 @@ Yields something like:
  Notice:
 
 ```text
+!104934 = distinct !DISubprogram(name: "makeBox__anon_43217", linkageName: "repro.makeBox__anon_43217", scope: !104913, file: !104913, line: 9, type: !104935, scopeLine: 43, flags: DIFlagStaticMember, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !32)
 !104938 = !DILocation(line: 43, column: 37, scope: !104934)
 !104939 = !DILocalVariable(name: "value", arg: 1, scope: !104934, file: !104913, line: 43, type: !104925)
 ```
 
-There is no line#43.
+Line #9 is correct, scopeLine #43 is not.  There is no line#43.
 
  * Changing the code to `value2` instead of `value` does not appear to impact line #, column #, or scope.
  * Changing the code to `makeBox2` instead of `makeBox` also appears to have no impact.
