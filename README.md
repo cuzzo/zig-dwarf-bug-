@@ -76,9 +76,14 @@ Yields something like:
 
  Notice:
 
-  * `!104938 = !DILocation(line: 43, column: 37, scope: !104934)`
+```text
+!104938 = !DILocation(line: 43, column: 37, scope: !104934)
+!104939 = !DILocalVariable(name: "value", arg: 1, scope: !104934, file: !104913, line: 43, type: !104925)
+```
 
 There is no line#43.
+
+Changing the code to `value2` instead of `value` does not appear to impact line #, column #, or scope.
 
 ## Further Evidence from llvm-dwarfdump
 
