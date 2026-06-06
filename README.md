@@ -152,6 +152,34 @@ Notice these two #43 lines:
 0x00000000011924c8     43     37     93   0             0       0  is_stmt prologue_end
 ```
 
+## lldb Impact
+
+```
+lldb ./repro-debug
+(lldb) target create "./repro-debug"
+Current executable set to '~/dwarf-bug/repro-debug' (x86_64).
+(lldb) breakpoint set -r "makeBox__anon"
+Breakpoint 1: where = repro-debug`repro.makeBox__anon_43217 + 8 at repro.zig:43:37, address = 0x00000000011924c8
+(lldb) run
+Process 1735052 launched: '/home/yahn/dwarf-bug/repro-debug' (x86_64)
+Process 1735052 stopped
+* thread #1, name = 'repro-debug', stop reason = breakpoint 1.1
+    frame #0: 0x00000000011924c8 repro-debug`repro.makeBox__anon_43217(value2=0x0000000000000002) at repro.zig:43:37
+(lldb) list 9
+   9    pub fn makeBox(comptime T: type, value2: *const T) Boxed(T) {
+   10       return .{ .root = value2 };
+   11   }
+   12  
+   13   const Plain = struct {
+   14       value: usize,
+   15       other: usize,
+   16   };
+   17  
+   18   test "generic return type debug location" {
+(lldb) list 43
+(lldb)
+```
+
 ## Expected Behavior
 
 All debug line metadata for instructions in `makeBox__anon_*` should map to real source locations in `repro.zig`.
