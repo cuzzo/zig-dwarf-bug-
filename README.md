@@ -154,7 +154,7 @@ Notice these two #43 lines:
 
 ## lldb Impact
 
-```
+```bash
 lldb ./repro-debug
 (lldb) target create "./repro-debug"
 Current executable set to '~/dwarf-bug/repro-debug' (x86_64).
@@ -178,6 +178,16 @@ Process 1735052 stopped
    18   test "generic return type debug location" {
 (lldb) list 43
 (lldb)
+```
+
+## addr2line Impact (seemingly breaks kcov)
+
+```bash
+nm ./repro-debug | grep "makeBox__anon"
+00000000011924c0 t repro.makeBox__anon_43217
+addr2line -e ./repro-debug -f 00000000011924c0
+repro.makeBox__anon_43217
+~/dwarf-bug/repro.zig:43
 ```
 
 ## Expected Behavior
