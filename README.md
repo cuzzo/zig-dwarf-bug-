@@ -83,7 +83,9 @@ Yields something like:
 
 There is no line#43.
 
-Changing the code to `value2` instead of `value` does not appear to impact line #, column #, or scope.
+ * Changing the code to `value2` instead of `value` does not appear to impact line #, column #, or scope.
+ * Changing the code to `makeBox2` instead of `makeBox` also appears to have no impact.
+ * Adding random whitespace before the test also appears to have no impact (though gets closer to there actually being a line#43).
 
 ## Further Evidence from llvm-dwarfdump
 
